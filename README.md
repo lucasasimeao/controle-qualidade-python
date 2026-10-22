@@ -1,60 +1,78 @@
-🏭 Sistema de Automação Digital: Gestão de Qualidade Industrial
-Este projeto consiste num protótipo de um sistema lógico desenvolvido em Python para o controlo de produção e inspeção de qualidade numa linha de montagem industrial. A solução automatiza a verificação de conformidade de peças, gere o armazenamento em caixas e gera relatórios estatísticos.
+# Controle de Qualidade Industrial em Python + SQLite
 
-🛠️ Tecnologias Utilizadas
-Linguagem: Python 3.11+
+> Sistema de terminal que inspeciona peças de uma linha de produção, aprova ou reprova cada uma por critérios de qualidade, salva tudo em SQLite e gera um relatório consolidado.
 
-Base de Dados: SQLite (Persistência local)
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
 
-Paradigma: Programação Estruturada e Modular
+## Sobre o projeto
 
-📖 Manual de Utilização
-Este manual descreve o passo a passo para operar o sistema e as regras de negócio aplicadas.
+Protótipo de **automação da inspeção de qualidade** em uma linha de montagem. Em vez de conferir peça por peça manualmente e anotar em papel, o operador digita as medidas e o sistema:
 
-1. Preparação e Execução
-Certifica-te de que tens o Python instalado no teu sistema.
+1. aplica as regras de aprovação automaticamente;
+2. registra o resultado e o motivo da reprovação;
+3. controla quantas caixas de expedição já foram fechadas;
+4. gera um relatório com os totais e os motivos de falha.
 
-Faz o download do ficheiro main.py.
+Projeto acadêmico da graduação em IA e Automação Digital (UniFECAF).
 
-Abre o terminal na pasta do ficheiro e executa o comando:
+## Funcionalidades
 
-Bash
+- **Cadastro de peça** (ID, peso, cor e comprimento) com resultado imediato.
+- **Regras de qualidade**: a peça é aprovada só se cumprir todos os critérios:
+  - peso entre 95 g e 105 g;
+  - cor azul ou verde (sem diferenciar maiúsculas e minúsculas);
+  - comprimento entre 10 cm e 20 cm.
+- **Motivos de reprovação** guardados junto com a peça (ex.: `Peso fora (95g-105g) | Cor inválida`).
+- **Listagem** de todo o histórico para rastreabilidade.
+- **Remoção** de peça pelo ID.
+- **Relatório consolidado** com consultas SQL: total de aprovadas e reprovadas, caixas fechadas (10 peças aprovadas por caixa), peças na caixa atual e lista de motivos de reprovação.
+- **Persistência em SQLite**: o banco `producao_industrial.db` é criado na primeira execução.
+- Tratamento de entrada inválida para peso e comprimento.
+
+## Tecnologias
+
+- Python 3.11+ (apenas biblioteca padrão)
+- SQLite (`sqlite3`) com consultas parametrizadas
+
+## Como executar
+
+```bash
+git clone https://github.com/lucasasimeao/Projeto_python.git
+cd Projeto_python
 python main.py
-Nota: O sistema criará automaticamente o ficheiro producao_industrial.db na primeira execução.
+```
 
-2. Regras de Aprovação (Critérios de Qualidade)
-Para que uma peça seja classificada como APROVADA, ela deve cumprir simultaneamente os seguintes requisitos:
+Menu:
 
-Peso: Entre 95g e 105g (inclusive).
+```text
+1. Cadastrar nova peça
+2. Listar peças cadastradas
+3. Remover peça (ID)
+4. Relatório final
+0. Sair
+```
 
-Cor: Apenas "Azul" ou "Verde" (o sistema ignora maiúsculas/minúsculas).
+## Estrutura do projeto
 
-Comprimento: Entre 10cm e 20cm (inclusive).
+```text
+.
+├── main.py                  # Camada de dados, regras de qualidade e menu
+└── producao_industrial.db   # Banco SQLite (gerado na execução)
+```
 
-Se qualquer um destes critérios falhar, a peça é registada como REPROVADA e o motivo da falha é armazenado.
+O código é dividido em três camadas dentro de `main.py`: **dados** (SQLite), **lógica** (validação e relatório) e **interface** (menu no terminal).
 
-3. Operação do Menu
-Ao iniciar o programa, terás as seguintes opções:
+## Competências demonstradas
 
-Opção 1 - Cadastrar nova peça: Introduz os dados técnicos (Peso, Cor e Comprimento). O sistema gera um ID único automaticamente e informa imediatamente o status da peça.
+- **Python** estruturado e modular, com regras de negócio isoladas em funções.
+- **SQL** na prática: criação de tabela, `INSERT`/`DELETE` parametrizados e agregações com `COUNT` e filtros.
+- **Modelagem de dados** simples para rastreabilidade (status + motivo da falha por peça).
+- **Automação de processo industrial** e geração de indicadores de qualidade (taxa de aprovação, motivos de falha).
 
-Opção 2 - Listar peças cadastradas: Exibe todo o histórico de produção armazenado na base de dados, permitindo a rastreabilidade.
+## Próximos passos
 
-Opção 3 - Remover peça: Permite eliminar um registo específico através do número do ID.
-
-Opção 4 - Gerar relatório final: Exibe o resumo da produção, incluindo o total de aprovadas/reprovadas e o status logístico das caixas.
-
-4. Lógica de Armazenamento
-O sistema gere automaticamente o fluxo de embalamento:
-
-Cada caixa tem capacidade para 10 peças aprovadas.
-
-Assim que a 10ª peça é aprovada, o sistema contabiliza uma caixa como "Fechada".
-
-Peças reprovadas não ocupam espaço nas caixas de expedição.
-
-📈 Estrutura de Dados
-O projeto utiliza um dicionário para a manipulação temporária dos dados e uma tabela SQLite para a persistência. A escolha do SQLite garante que os dados de produção não sejam perdidos ao encerrar o software, simulando um ambiente industrial real.
-
-✒️ Autor
-Lucas Araújo Silva Simeão 
+- Gerar o ID automaticamente e tratar IDs duplicados (hoje o ID é digitado e um ID repetido interrompe o programa).
+- Exportar os dados para CSV e analisar a taxa de reprovação por critério com Pandas.
+- Criar um painel simples (Streamlit ou Power BI) com os indicadores do relatório.
+- Remover o `.db` do repositório e adicionar `.gitignore`.
