@@ -26,7 +26,7 @@ Projeto acadêmico da graduação em IA e Automação Digital (UniFECAF).
 - **Motivos de reprovação** guardados junto com a peça (ex.: `Peso fora (95g-105g) | Cor inválida`).
 - **Listagem** de todo o histórico para rastreabilidade.
 - **Remoção** de peça pelo ID.
-- **Relatório consolidado** com consultas SQL: total de aprovadas e reprovadas, caixas fechadas (10 peças aprovadas por caixa), peças na caixa atual e lista de motivos de reprovação.
+- **Relatório consolidado** com consultas SQL: total de aprovadas e reprovadas, taxa de aprovação, caixas fechadas (10 peças aprovadas por caixa), peças na caixa atual e lista de motivos de reprovação.
 - **Persistência em SQLite**: o banco `producao_industrial.db` é criado na primeira execução.
 - Tratamento de entrada inválida para peso e comprimento.
 
@@ -38,9 +38,10 @@ Projeto acadêmico da graduação em IA e Automação Digital (UniFECAF).
 ## Como executar
 
 ```bash
-git clone https://github.com/lucasasimeao/Projeto_python.git
-cd Projeto_python
+git clone https://github.com/lucasasimeao/controle-qualidade-python.git
+cd controle-qualidade-python
 python main.py
+python -m unittest   # roda os testes
 ```
 
 Menu:
@@ -58,7 +59,8 @@ Menu:
 ```text
 .
 ├── main.py                  # Camada de dados, regras de qualidade e menu
-└── producao_industrial.db   # Banco SQLite (gerado na execução)
+├── test_main.py             # Testes (unittest) das regras e do banco
+└── producao_industrial.db   # Banco SQLite (gerado na execução, fora do Git)
 ```
 
 O código é dividido em três camadas dentro de `main.py`: **dados** (SQLite), **lógica** (validação e relatório) e **interface** (menu no terminal).
@@ -72,7 +74,6 @@ O código é dividido em três camadas dentro de `main.py`: **dados** (SQLite), 
 
 ## Próximos passos
 
-- Gerar o ID automaticamente e tratar IDs duplicados (hoje o ID é digitado e um ID repetido interrompe o programa).
+- Gerar o ID automaticamente (hoje ele é digitado; IDs repetidos são recusados com aviso).
 - Exportar os dados para CSV e analisar a taxa de reprovação por critério com Pandas.
 - Criar um painel simples (Streamlit ou Power BI) com os indicadores do relatório.
-- Remover o `.db` do repositório e adicionar `.gitignore`.
